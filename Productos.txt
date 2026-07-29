@@ -1,1 +1,2 @@
-Polenta;80.0;17
+Cubierta 250-17;800.0;28
+Aceite;300.0;20

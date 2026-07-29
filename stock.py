@@ -1,6 +1,8 @@
+from datetime import datetime
 productos = []
 clientes = []
-facturas =[]
+facturas = []
+vendedores = []
 opcion = 0
 try: 
     archivo = open("Productos.txt", "r")
@@ -14,7 +16,21 @@ try:
     archivo.close()
 except FileNotFoundError:
     pass
-while opcion != 12:
+try:
+    archivo = open("Clientes.txt", "r")
+    for linea in archivo:
+        clientes.append(linea.strip())
+    archivo.close()
+except FileNotFoundError:
+    pass
+try:
+    archivo = open("Vendedores.txt","r")
+    for linea in archivo:
+        vendedores.append(linea.strip())
+    archivo.close()
+except FileNotFoundError:
+    pass
+while opcion != 15:
     print("Bienvenidos al stock de Jaimito S.A.")
     print("1- Añadir productos.")
     print("2- Eliminar productos.")
@@ -27,13 +43,17 @@ while opcion != 12:
     print("9- Ver lista de clientes.")
     print("10- Crear una factura.")
     print("11- Ver historial de facturas.")
-    print("12- Salir de ventana de stock.")
+    print("12- Añadir vendedor.")
+    print("13- Eliminar vendedor.")
+    print("14- Ver vendedores.")
+    print("15- Salir de ventana de stock.")
     opcion = int(input("Selecciona la opción que necesites."))
     if opcion == 1:
         producto = input("Nombre del producto.")
         precio = float(input("Precio: "))
         stock = int(input("Cantidad disponible: "))
         productos.append([producto, precio, stock])
+        iva = precio * 0.22
     elif opcion ==2:
         borrar = input("Producto a borrar (Escriba el nombre del producto).")
         for producto in productos:
@@ -95,63 +115,138 @@ while opcion != 12:
     elif opcion == 9:
         print("Mostrando la lista de clientes de la empresa", clientes)
     elif opcion == 10:
-        cliente_fac = input("Nombre del cliente.")
-        if cliente_fac not in clientes:
-            print("Cliente no encontrado.")
+
+        vendedor = input("Ingrese el nombre del vendedor: ")
+        if vendedor not in vendedores:
+            print("Vendedor no encntrado.")
         else:
-            producto_fac = input("Producto a facturar:")
-            for producto in productos:
-                if producto[0] == producto_fac:
-                    cantidad_fac = int(input("Cantidad a facturar: "))
-                    if cantidad_fac <= producto[2]:
-                        total_fac = cantidad_fac * producto[1]
-                        descuento = 0
-                        if cantidad_fac >= 10:
-                            descuento = total_fac * 0.10
-                        elif cantidad_fac >= 5:
-                            descuento = total_fac * 0.05
-                        producto[2] -= cantidad_fac
-                        total_final = total_fac - descuento
-                        print("Precio sin dto: $", total_fac)
-                        print("Descuento: $", descuento)
-                        print("Total dto final: $", total_final)
-                        facturas.append([
-                            cliente_fac,
-                            producto[0],
-                            cantidad_fac,
-                            total_final
-                        ])
-                        print("\n==============================")
-                        print("      FACTURA JAIMITO S.A.")
-                        print("==============================")
-                        print("Cliente:", cliente_fac)
-                        print("Producto:", producto[0])
-                        print("Cantidad:", cantidad_fac)
-                        print("Precio unitario: $", producto[1])
-                        print("Descuento: $", descuento)
-                        print("------------------------------")
-                        print("TOTAL: $", total_final)
-                        print("==============================")
-                    else:
-                        print("No hay stock suficiente.")
-                    break
+       
+            cliente_fac = input("Nombre del cliente.")
+            if cliente_fac not in clientes:
+                print("Cliente no encontrado.")
             else:
-                print("Producto no encontrado.")
+                carrito = []
+
+                while True:
+
+                    producto_fac = input("Producto a facturar:")
+                    encontrado = False
+
+                    for producto in productos:
+                #PRODUCTO[0] #Nombre
+                #PRODUCTO[1] #PRECIO
+                #PRODUCTO[2] #CANTIDAD = STOCK
+                        if producto[0] == producto_fac:
+                            encontrado = True
+                            cantidad_fac = int(input("Cantidad a facturar: "))
+                            if cantidad_fac <= producto[2]:
+
+                                total_fac = cantidad_fac * producto[1]
+
+                                descuento = 0
+
+                                if cantidad_fac >= 10:
+                                    descuento = total_fac * 0.10
+                                elif cantidad_fac >= 5:
+                                    descuento = total_fac * 0.05
+
+                                iva = total_fac * 0.22
+
+                                total_final = total_fac - descuento + iva
+
+                                producto[2] -= cantidad_fac
+                                
+                                carrito.append([
+                                    producto[0],
+                                    cantidad_fac,
+                                    producto[1],
+                                    total_fac,
+                                    descuento,
+                                    iva,
+                                    total_final
+                                ])
+                            else:
+                                print("No hay suficiente stock.")
+                            break
+                    if not encontrado:
+                        print("Producto",producto_fac,"no encontrado")
+
+                    seguir = input("¿Agregar otro producto?").upper()
+
+                    if seguir == "N":
+                        break
+
+                subtotal = 0
+                descuento_total = 0
+                iva_total = 0
+                total = 0
+                for item in carrito:
+                        subtotal += item[3]
+                        descuento_total += item[4]
+                        iva_total += item[5]
+                        total += item[6]
+                ahora = datetime.now()
+
+                fecha = ahora.strftime("%d/%m/%y")
+
+                hora = ahora.strftime("%H:%M:%S")
+
+                print("\nProductos en el carrito:")  
+                print("\n==============================")
+                print("      FACTURA JAIMITO S.A.")
+                print("==============================")
+                print("Fecha:",fecha)
+                print("Hora:",hora)
+                print("Vendedor: ", vendedor)
+                print("Cliente:", cliente_fac)
+                for item in carrito:
+                    print("Producto:", item[0])
+                    print("Cantidad:", item[1])
+                    print("Precio: $", item[2])
+                    print("Subtotal: $", item[3])
+                print("------------------------------")
+                print("Subtotal: $", subtotal)
+                print("Descuento: $", descuento_total)
+                print("IVA: $", iva_total)
+                print("TOTAL: $", total)
+                print("==============================")
+                facturas.append([
+                    cliente_fac,
+                    carrito,
+                    total
+                ])
     elif opcion == 11:
 
         print("FACTURAS")
 
         for factura in facturas:
 
-            print(
-                "Cliente:", factura[0],
-                "| Producto:", factura[1],
-                "| Cantidad:", factura[2],
-                "| Total: $", factura[3]
-            )
+            print("Cliente:", factura[0])
+
+            print("Productos:")
+            for item in factura[1]:
+                print("-", item[0], "x", item[1])
+            print("Total: $", factura[2])
+            
 
     elif opcion == 12:
-        
+        vendedor_nombre = input("Añade el nombre del vendedor.")
+        vendedores.append(vendedor_nombre)
+        print("El vendedor", vendedor_nombre,"ha sido añadido con exito.")
+    elif opcion == 13:
+        borrar_vendedor = input("Escribe el vendedor a borrar(tiene que estar en el programa).")
+        if borrar_vendedor in vendedores:
+            vendedores.remove(borrar_vendedor)
+            print("Vendedor", borrar_vendedor,"eliminado con exito.")
+        else:
+            print("Vendedor",borrar_vendedor,"no encontrado, escribe otro.")
+
+    elif opcion == 14:
+        print("Mostrando la lista de vendedores:")
+        for vendedor in vendedores:
+            print("-", vendedor)
+
+    elif opcion == 15:   
         archivo = open("Productos.txt", "w")
 
         for producto in productos:
@@ -161,8 +256,19 @@ while opcion != 12:
             str(producto[2]) + "\n"
             )
 
-            archivo.close()
+    archivo.close()
+
+    archivo = open("Clientes.txt","w")
+    for cliente in clientes:
+        archivo.write(cliente + "\n")
+    archivo.close()
+
+    archivo = open("Vendedores.txt","w")
+    for vendedor in vendedores:
+        archivo.write(vendedor +"\n")
+    archivo.close()
 
     print("Saliendo de stock.")
    
  
+ #Comenzar con funciones.
