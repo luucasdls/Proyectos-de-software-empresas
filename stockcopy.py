@@ -299,4 +299,7 @@ while opcion != 15:
     elif opcion == 15:   
         cerrar_programa()
    
+ 
+#Comenzar con funciones.
 #Dejar mejor organizada la factura.
+#
