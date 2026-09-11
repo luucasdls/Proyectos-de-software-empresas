@@ -55,14 +55,16 @@ def ver_productos():
             ",$",producto[1],
             ",Cantidad:", producto[2])
 def buscar_productos():
+    buscar = input("Producto a buscar: ")
+    encontrado = False
 
-    buscar = input("Producto a buscar.")
     for producto in productos:
-        if producto[0] == buscar:
-            print("Producto encontrado:", buscar)
-            break
-        else:
-            print("Producto", buscar, "no encontrado.")
+         if producto[0] == buscar:
+              print("Producto encontrado:", buscar)
+              encontrado = True
+              break
+    if not encontrado:
+            print("Producto", buscar,"no encontrado.")
 def stock_minimo():
             
             if len(productos) ==0:
@@ -85,7 +87,7 @@ def modificar_precio_stock():
                     if producto[0] == stock_precio:
                         producto[1] = float(input("Nuevo precio:"))
                         producto[2] = int(input("Nuevo stock:"))
-                    break
+                        break
                 else:
                     print("Producto", stock_precio, "no encontrado.")
 def añadir_cliente():
@@ -142,8 +144,6 @@ def crear_factura():
                                 iva = total_fac * 0.22
                                 
                                 total_final = total_fac - descuento + iva
-                                
-                                producto[2] -= cantidad_fac
 
                                 carrito.append([
                                     producto[0],
@@ -164,40 +164,47 @@ def crear_factura():
                     
                     if seguir == "N":
                         break
-                    subtotal = 0
-                    descuento_total = 0
-                    iva_total = 0
-                    total = 0
-                    for item in carrito:
-                        subtotal += item[3]
+
+                subtotal = 0
+                descuento_total = 0
+                iva_total = 0
+                total = 0
+
+                for item in carrito:
+                    subtotal += item[3]
                     descuento_total += item[4]
                     iva_total += item[5]
                     total += item[6]
-                    ahora = datetime.now()
-                    fecha = ahora.strftime("%d/%m/%y")
-                    
-                    hora = ahora.strftime("%H:%M:%S")
-                    
-                    print("\nProductos en el carrito:")  
-                    print("\n==============================")
-                    ("      FACTURA JAIMITO S.A.")
-                    print("==============================")
-                    print("Fecha:",fecha)
-                    print("Hora:",hora)
-                    print("Vendedor: ", vendedor)
-                    print("Cliente:", cliente_fac)
-                    for item in carrito:
-                        print("Producto:", item[0])
-                        print("Cantidad:", item[1])
-                        print("Precio: $", item[2])
-                        print("Subtotal: $", item[3])
-                    print("------------------------------")
-                    print("Subtotal: $", subtotal)
-                    print("Descuento: $", descuento_total)
-                    print("IVA: $", iva_total)
-                    print("TOTAL: $", total)
-                    print("==============================")
-                    facturas.append([
+
+                ahora = datetime.now()
+                fecha = ahora.strftime("%d/%m/%y")   
+                hora = ahora.strftime("%H:%M:%S")
+
+                for item in carrito:
+                    for producto in productos:
+                         if producto[0] == item [0]:
+                              producto[2] -= item[1]
+                              break
+                print("\nProductos en el carrito:")  
+                print("\n==============================")
+                print("      FACTURA JAIMITO S.A.")
+                print("==============================")
+                print("Fecha:",fecha)
+                print("Hora:",hora)
+                print("Vendedor: ", vendedor)
+                print("Cliente:", cliente_fac)
+                for item in carrito:
+                    print("Producto:", item[0])
+                    print("Cantidad:", item[1])
+                    print("Precio c/u: $", item[2])
+                    print("Subtotal: $", item[3])
+                print("------------------------------")
+                print("Subtotal: $", subtotal)
+                print("Descuento: $", descuento_total)
+                print("IVA: $", iva_total)
+                print("TOTAL: $", total)
+                print("==============================")
+                facturas.append([
                         cliente_fac,
                         carrito,
                         total
@@ -206,13 +213,12 @@ def ver_historial_facturas():
             print("FACTURAS")
 
             for factura in facturas:
-
                 print("Cliente:", factura[0])
 
                 print("Productos:")
                 for item in factura[1]:
                     print("-", item[0], "x", item[1])
-                    print("Total: $", factura[2])
+                print("Total: $", factura[2])
 def añadir_vendedor():
     vendedor_nombre = input("Añade el nombre del vendedor.")
     vendedores.append(vendedor_nombre)
@@ -252,17 +258,21 @@ def cerrar_programa():
     print("Saliendo de stock.")
 while opcion != 15:
     print("Bienvenidos al stock de Jaimito S.A.")
+    print("-PRODUCTOS-")
     print("1- Añadir productos.")
     print("2- Eliminar productos.")
     print("3- Ver productos.")
     print("4- Buscar productos.")
     print("5- Stock próximo a reponer.")
     print("6- Modificar precio y stock.")
+    print("-CLIENTES-")
     print("7- Añadir clientes.")
     print("8- Eliminar clientes.")
     print("9- Ver lista de clientes.")
+    print("-FACTURAS-")
     print("10- Crear una factura.")
     print("11- Ver historial de facturas.")
+    print("-VENDEDORES-")
     print("12- Añadir vendedor.")
     print("13- Eliminar vendedor.")
     print("14- Ver vendedores.")
