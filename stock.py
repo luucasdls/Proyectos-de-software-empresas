@@ -309,4 +309,4 @@ while opcion != 15:
     elif opcion == 15:   
         cerrar_programa()
    
-#Dejar mejor organizada la factura.
+#Creador: Lucas de los Santos.
