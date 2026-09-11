@@ -30,15 +30,17 @@ try:
     archivo.close()
 except FileNotFoundError:
     pass
+
+#Función para agregar nombre, precio y stock del producto a la aplicación.
 def agregar_producto():
-        
         producto = input("Nombre del producto.")
         precio = float(input("Precio: "))
         stock = int(input("Cantidad disponible: "))
         productos.append([producto, precio, stock])
         iva = precio * 0.22
+
+#Función para remover productos de la aplicación.
 def borrar_producto():
-        
         borrar = input("Producto a borrar (Escriba el nombre del producto).")
         for producto in productos:
             if producto[0] == borrar:
@@ -47,17 +49,19 @@ def borrar_producto():
                 break
         else:
             print("Ese producto no existe, prueba otro.")
-def ver_productos():
 
+#Todo visual, mostramos los productos disponibles, su valor unitario y stock.
+def ver_productos():
     print("Mostrando la lista de productos actuales.")
     for producto in productos:
         print("-",producto[0],
             ",$",producto[1],
             ",Cantidad:", producto[2])
+        
+#Función para buscar productos verídicos del stock.
 def buscar_productos():
     buscar = input("Producto a buscar: ")
     encontrado = False
-
     for producto in productos:
          if producto[0] == buscar:
               print("Producto encontrado:", buscar)
@@ -65,6 +69,8 @@ def buscar_productos():
               break
     if not encontrado:
             print("Producto", buscar,"no encontrado.")
+
+#Función donde el programa busca el producto más proximo a quedar en 0, osea para reponer.
 def stock_minimo():
             
             if len(productos) ==0:
@@ -80,6 +86,8 @@ def stock_minimo():
                     "Precio: $", menor[1],
                     "Cantidad: ", menor[2],
                 )
+
+#Función para modificar el precio del producto y su cantidad.
 def modificar_precio_stock():
                 
                 stock_precio = input("Producto a modificar:")
@@ -90,11 +98,14 @@ def modificar_precio_stock():
                         break
                 else:
                     print("Producto", stock_precio, "no encontrado.")
+#Función para añadir clientes a la lista (CLIENTES).
 def añadir_cliente():
 
     nombre_cliente = input("Nombre del cliente: ")
     clientes.append(nombre_cliente)
     print("Cliente",nombre_cliente,"a la lista fue añadido con exito." )
+
+#Función para borrar clientes de la lista (CLIENTES).
 def eliminar_cliente():
 
     borrar1 = input("Cliente a borrar(Escriba el nombre del cliente).")
@@ -103,9 +114,12 @@ def eliminar_cliente():
         print("Cliente eliminado.")
     else:
         print("Ese cliente no existe.")
-def mostrar_lista_clientes():
 
+#Función para mostrar la lista (CLIENTES).
+def mostrar_lista_clientes():
     print("Mostrando la lista de clientes de la empresa", clientes)
+
+
 def crear_factura():
         
         vendedor = input("Ingrese el nombre del vendedor: ")
@@ -309,4 +323,4 @@ while opcion != 15:
     elif opcion == 15:   
         cerrar_programa()
    
-#Dejar mejor organizada la factura.
+#Creador: Lucas de los Santos.
